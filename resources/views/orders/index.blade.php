@@ -33,5 +33,7 @@
             </tr>
         @endforeach
     </table>
-    {!! $orders->render() !!}
+    <div class="pages text-center">
+        {!! $orders->render() !!}
+    </div>
 @endsection

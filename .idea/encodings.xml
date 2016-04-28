@@ -14,9 +14,9 @@
     <file url="file://$PROJECT_DIR$/resources/views/auth/register.blade.php" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/resources/views/auth/reset.blade.php" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/resources/views/orders" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/products/_form.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/products/show.blade.php" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/resources/views/register" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/resources/views/template.blade.php" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/vendor/illuminate" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vendor/laravel/framework/src/Illuminate/html" charset="UTF-8" />
   </component>
 </project>

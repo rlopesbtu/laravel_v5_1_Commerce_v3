@@ -14,9 +14,9 @@ class OrdersController extends Controller
 {
     private $orderModel;
 
-    public function __construct(Order $order)
+    public function __construct(Order $orderModel)
     {
-        $this->orderModel = $order;
+        $this->orderModel = $orderModel;
     }
 
     public function index()

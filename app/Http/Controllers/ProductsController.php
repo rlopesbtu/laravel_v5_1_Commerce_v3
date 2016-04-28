@@ -25,6 +25,7 @@ class ProductsController extends Controller
     {
 
         $products = $this->productModel->paginate(10);
+
         return view('products.index', compact('products'));
     }
 
@@ -53,9 +54,10 @@ class ProductsController extends Controller
 
     public function edit($id, Category $category)
     {
-        $categories = $category->lists('name','id');
         $product = $this->productModel->find($id);
-        return view('products.edit',compact('product','categories'));
+        $product->tags = $product->tag_list;
+        $categories = $category->lists('name','id');
+        return view('products.edit', compact('product','categories'));
     }
 
     public function destroy($id)
@@ -76,7 +78,6 @@ class ProductsController extends Controller
 
     private function removeImage(ProductImage $image)
     {
-
         $meuStorage = Storage::disk('public_local');
         if($meuStorage->exists($image->id.'.'.$image->extension)){
             $meuStorage->delete($image->id.'.'.$image->extension);
@@ -126,10 +127,17 @@ class ProductsController extends Controller
         return redirect()->route('products.images',['id'=>$id]);
     }
 
+    /**
+     * @param ProductImage $productImage
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroyImage(ProductImage $productImage, $id)
     {
         $image = $productImage->find($id);
+      //  echo 'Aqui',exit;
         $meuStorage = Storage::disk('public_local');
+
         if($meuStorage->exists($image->id.'.'.$image->extension)){
             $meuStorage->delete($image->id.'.'.$image->extension);
         }

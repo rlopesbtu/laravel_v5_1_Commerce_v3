@@ -26,8 +26,16 @@
         </table>
 
     <br>
-    <a href="{{ route('orders.edit', ['id'=>$order->id]) }}" class='btn btn-primary '>Edit</a>
-    <a href="{{ route('orders.index') }}" class='btn btn-default '>Back</a>
-
+    <table>
+      <tr>
+        <td>
+            <a href="{{ route('orders.edit', ['id'=>$order->id]) }}" class='btn btn-primary '>Edit</a>
+        </td>
+        <td>
+            <br>
+            <a href="{{ route('orders.index') }}" class='btn btn-default '>Back</a>
+        </td>
+      </tr>
+    </table>
 
 @endsection
