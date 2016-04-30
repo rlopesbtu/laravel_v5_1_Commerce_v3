@@ -14,7 +14,7 @@
     @include('products._form')
     <div class="form-group">
         {!! Form::submit('Save Product', ['class'=>'btn btn-primary']) !!}
-        <a href="{{ route('index') }}" class='btn btn-default '>Back</a>
+        <a href="{{ route('products') }}" class='btn btn-default '>Back</a>
     </div>
     {!! Form::close() !!}
 

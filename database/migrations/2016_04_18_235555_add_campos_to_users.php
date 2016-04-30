@@ -14,7 +14,9 @@ class AddCamposToUsers extends Migration {
 	{
 		Schema::table('users', function(Blueprint $table)
 		{
+			$table->string('is_admin', 1)->nullable();
 			$table->string('address', 255)->nullable();
+			$table->string('CEP', 8)->nullable();
 			$table->string('number', 4)->nullable();
 			$table->string('district')->nullable();
 			$table->string('city')->nullable();
