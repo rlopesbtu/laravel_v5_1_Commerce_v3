@@ -13,65 +13,76 @@ use CodeCommerce\Category;
 use Auth;
 use CodeCommerce\Events\CheckoutEvent;
 use PHPSC\PagSeguro\Items\Item;
+use PHPSC\PagSeguro\Purchases\Transactions\Locator;
 use PHPSC\PagSeguro\Requests\Checkout\CheckoutService;
+
 
 class CheckoutController extends Controller
 {
-    public function place(Order $orderModel, OrderItem $orderItem, Category $category, CheckoutService $checkoutService)
+    
+    public function place(Order $orderModel, CheckoutService $checkoutService)
     {
-        if (!Session::has('cart')){
-            return redirect()->route('store');
+        if(!Session::has('cart')){
+            return "Não existe sessão";
         }
-
-        $categories = $category->all();
 
         $cart = Session::get('cart');
 
-        if ($cart->getTotal() > 0){
-
-
-            //pagseguro
+        if($cart->getTotal() > 0){
             $checkout = $checkoutService->createCheckoutBuilder();
 
-
-
-            $order = $orderModel->create(['user_id'=>Auth::user()->id, 'total'=>$cart->getTotal()]);
-
-            foreach ($cart->all() as $k=>$item) {
-
-                //pagseguro
-                $checkout->addItem(new Item($k, $item['name'], number_format($item['price'], 2, '.', ''), $item['qtd']));
-
-                $item = ['product_id'=>$k, 'price'=>$item['price'], 'qtd'=>$item['qtd']];
-                $order->items()->create($item);
-
+            foreach($cart->all() as $k=>$item){
+                $checkout->addItem(new Item($k, $item['name'], number_format($item['price'],2,".", ""), $item['qtd']));
             }
 
-            $cart->clear();
+    //        event(new CheckoutEvent());
 
-            event(new CheckoutEvent(Auth::user(), $order));
-
-            //return view('store.checkout', compact('order', 'categories'));
-
-            //pagseguro            
             $response = $checkoutService->checkout($checkout->getCheckout());
-            return redirect($response->getRedirectionUrl());
 
+            return redirect($response->getRedirectionUrl());
+        }
+
+        $categories = Category::all();
+
+        return view('store.checkout', ['cart'=>'empty', 'categories'=>$categories]);
+
+    }
+    
+    
+
+    public function closeCheckout(\Illuminate\Http\Request $request, Locator $service, Order $orderModel)
+    {
+        if(!Session::has('cart')){
+            return "Não existe sessão";
+        }
+
+        $cart = Session::get('cart');
+        $transaction_code = $request->get('transaction_id');
+        $transaction = $service->getByCode($transaction_code);
+        $status = $transaction->getDetails()->getStatus();
+        $payment_type = $transaction->getPayment()->getPaymentMethod()->getType();
+        $netAmount = $transaction->getPayment()->getNetAmount();
+
+        $order = $orderModel->create([
+            'user_id'=>Auth::user()->id,
+            'total'=>$cart->getTotal(),
+            'status_id'=>$status,
+            'transaction_code'=>$transaction_code,
+            'payment_type_id'=>$payment_type,
+            'netAmount'=>$netAmount,
+        ]);
+
+        foreach($cart->all() as $k=>$item){
+            $order->items()->create(['product_id'=>$k, 'price'=>$item['price'], 'qtd'=>$item['qtd']]);
         }
 
 
-        return view('store.checkout', ['cart'=>'empty', 'categories'=>$categories]);
+        $cart->clear();
+
+
+        return redirect()->route('account.orders');
     }
 
-    public function teste(CheckoutService $checkoutService)
-    {
-        $checkout = $checkoutService->createCheckoutBuilder()
-            ->addItem(new Item(1, 'Televis�o LED 500', 8999.99))
-            ->addItem(new Item(2, 'Video-game mega ultra blaster', 799.99))
-            ->getCheckout();
 
-        $response = $checkoutService->checkout($checkout);
 
-        return redirect($response->getRedirectionUrl());
-    }
 }

@@ -20,8 +20,10 @@ Route::get('cart/destroy/{id}',['as'=>'cart.destroy','uses' => 'CartController@d
 Route::get('cart/update/{id}/{refresh}',['as'=>'cart.update','uses' => 'CartController@update']);
 
 
-//Tem que estar autenticado
+Route::get('checkout/closeCheckout', ['as' => 'store.checkout.closeCheckout', 'uses' => 'CheckoutController@closeCheckout']);
+Route::get('pagseguro/notification}', ['as' => 'store.pagseguro.notification', 'uses' => 'CheckoutController@closeCheckout']);
 
+//Tem que estar autenticado
 Route::group(['middleware'=>'auth'], function(){
 	Route::get('checkout/placeOrder', ['as' => 'checkout.place', 'uses' => 'CheckoutController@place']);
 	Route::get('account/orders', ['as' => 'account.orders', 'uses' => 'AccountController@orders']);
@@ -85,9 +87,11 @@ Route::group(['prefix'=>'admin','middleware'=>'auth_admin','where'=>['id'=>'[0-9
 Route::get('home', 'HomeController@index');
 
 Route::get('evento', function() {
-	//Illuminate\Support\Facades\Event::fire(new \CodeCommerce\Events\CheckoutEvent()); Essa linha e a debaixo é a mesma coisa
+	//Illuminate\Support\Facades\Event::fire(new \CodeCommerce\Events\CheckoutEvent()); Essa linha e a debaixo ï¿½ a mesma coisa
 	event(new \CodeCommerce\Events\CheckoutEvent());
 });
+
+
 
 
 Route::get('test','CheckoutController@test');

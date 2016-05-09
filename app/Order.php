@@ -1,17 +1,21 @@
-<?php namespace CodeCommerce;
+<?php
+
+namespace CodeCommerce;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-
     protected $fillable = [
         'user_id',
         'total',
-        'status_id'
+        'status_id',
+        'transaction_code',
+        'payment_type_id',
+        'netAmount',
     ];
 
-	public function items()
+    public function items()
     {
         return $this->hasMany('CodeCommerce\OrderItem');
     }
@@ -26,6 +30,8 @@ class Order extends Model
         return $this->belongsTo('CodeCommerce\OrderStatus');
     }
 
-
-
+    public function paymentType()
+    {
+        return $this->belongsTo('CodeCommerce\OrderPaymentType');
+    }
 }
